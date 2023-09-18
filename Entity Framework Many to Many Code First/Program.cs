@@ -60,15 +60,17 @@ class PlayList
 {
     public int ID { get; set; }
     public string Title { get; set; }
-    public List<Video> Videos { get; set; }     // Auto List Mapping table - SQLserver
+    //public List<Video> Videos { get; set; }     // Auto List Mapping table - SQLserver
+    public List<Video> GoodVideos { get; set; }     // Auto List Mapping table - SQLserver
+    public List<Video> BadVideos { get; set; }     // Auto List Mapping table - SQLserver
     //public ICollection<Video> Videos { get; set; }     // ICollection -- also a ManytoMany Relationship
-    public override string ToString()
-    {
-        string ret = Title + ": ";
-        foreach (Video vid in Videos)
-            ret += vid.Title + ", ";
-        return ret;
-    }
+    //public override string ToString()
+    //{
+    //    string ret = Title + ": ";
+    //    foreach (Video vid in Videos)
+    //        ret += vid.Title + ", ";
+    //    return ret;
+    //}
 }
 
 class Video
@@ -96,7 +98,8 @@ class MeContext : DbContext     // PipeLine --SQLServer and VS-- Schema
 
     protected override void OnModelCreating(DbModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<PlayList>().HasMany(p => p.Videos).WithMany();  // high level metadata 
+        //modelBuilder.Entity<PlayList>().HasMany(p => p.Videos).WithMany();  // high level metadata -- with lambda navigation
+        //modelBuilder.Entity<Video>().HasMany(v => v.Playlists); // error no playlist property
     }       // recommendation for knowledge in "HOOK Design Pattern "
     /*
      *      ---EntityFramework SQLServer
@@ -134,7 +137,8 @@ class MainClass
             Description = "Me good description"
         };
         PlayList thePlaylist = new PlayList { Title = "Me Awesome Playlist" };
-        thePlaylist.Videos = new List<Video> { goodVid };
+        //thePlaylist.Videos = new List<Video> { goodVid };
+        thePlaylist.GoodVideos = new List<Video> { goodVid };
 
         db.Playlists.Add(thePlaylist);
         db.SaveChanges();
