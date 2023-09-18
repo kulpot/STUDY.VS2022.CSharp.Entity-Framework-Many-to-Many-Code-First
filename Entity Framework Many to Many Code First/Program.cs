@@ -78,6 +78,7 @@ class Video
     public int ID { get; set; }
     public string Title { get; set; }
     public string Description { get; set; }
+    public List<PlayList> Playlists { get; set; }       // 
 
     // Many-to-Manty Relationship -- added navigation
     // ----------------------OneToMany Relationship--- if no List<> here--------------------
@@ -99,6 +100,8 @@ class MeContext : DbContext     // PipeLine --SQLServer and VS-- Schema
     protected override void OnModelCreating(DbModelBuilder modelBuilder)
     {
         //modelBuilder.Entity<PlayList>().HasMany(p => p.Videos).WithMany();  // high level metadata -- with lambda navigation
+        modelBuilder.Entity<PlayList>().HasMany(p => p.GoodVideos).WithMany(v => v.Playlists);  // high level metadata -- with lambda navigation
+        modelBuilder.Entity<PlayList>().HasMany(p => p.BadVideos).WithMany();  // high level metadata -- with lambda navigation
         //modelBuilder.Entity<Video>().HasMany(v => v.Playlists); // error no playlist property
     }       // recommendation for knowledge in "HOOK Design Pattern "
     /*
@@ -139,6 +142,7 @@ class MainClass
         PlayList thePlaylist = new PlayList { Title = "Me Awesome Playlist" };
         //thePlaylist.Videos = new List<Video> { goodVid };
         thePlaylist.GoodVideos = new List<Video> { goodVid };
+        thePlaylist.BadVideos = new List<Video> { goodVid };
 
         db.Playlists.Add(thePlaylist);
         db.SaveChanges();
